@@ -1,0 +1,9 @@
+{
+    "ocaml.sandbox": {
+        "kind": "global"
+    },
+    "files.exclude": {
+        "**/**.cm**": true,
+        "**/**.o": true
+    }
+}
