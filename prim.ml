@@ -14,7 +14,8 @@ let prim g =
         let c1 = snd pred.(y) in
         if c < c1 then (
           pred.(y) <- (x, c) ;
-          if c1 = max_float then Prioqueue.add q y c else Prioqueue.update q y c
+          if c1 = max_float then Prioqueue.add q y c
+          else Prioqueue.update q y c
         ) ;
         explore_voisins x l
     | _ :: l -> explore_voisins x l
@@ -31,5 +32,5 @@ let prim g =
 ;;
 
 
-let s, t = prim Graph.g1 in
-Printf.printf "%f, " s ; Print.print_list_pairs t
+(* let s, t = prim Graph.g1 in
+Printf.printf "%f, " s ; Print.print_list_pairs t *)

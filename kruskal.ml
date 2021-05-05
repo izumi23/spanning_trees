@@ -1,6 +1,7 @@
 let kruskal g =
   let n = Array.length g in
   let l = Merge.sort (fun (_,_,p) (_,_,q) -> p <= q) (Graph.array_to_list g) in
+  print_string "sorted\n" ; flush stdout ;
   let c = Unionfind.create n in
   let rec aux w t = function
     | [] -> w, List.rev t
@@ -14,7 +15,7 @@ let kruskal g =
 ;;  
 
 
-let s, t = kruskal Graph.g1 in
-Printf.printf "%f, " s ; Print.print_list_pairs t
+(* let s, t = kruskal Graph.g1 in
+Printf.printf "%f, " s ; Print.print_list_pairs t *)
 
 

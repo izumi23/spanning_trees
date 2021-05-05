@@ -46,23 +46,36 @@ let g1_matrix = [|
 
 let g1 = matrix_to_array g1_matrix
 
+let hash x y =
+  let pos = float_of_int (7 + x*x + y*y) in
+  let z = pos *. 0.61803398874989484 in z -. (floor z)
+
 let complete_array n =
-  let hash x y =
-    let pos = float_of_int (7 + x*x + n*n*y*y) in
-    let z = pos *. 0.61803398874989484 in z -. (floor z)
-  in
   let g = Array.make n [] in
   let rec aux x y l =
-    if y < 0 then l else aux x (y-1) ((y, hash x y) :: l)
+    if y < 0 then l
+    else if x = y then aux x (y-1) l
+    else aux x (y-1) ((y, hash x y) :: l)
   in
   for x = 0 to n-1 do g.(x) <- aux x (n-1) [] done ;
   g
 
 let complete_matrix n =
-  let hash x y =
-    let pos = float_of_int (7 + x*x + n*n*y*y) in
-    let z = pos *. 0.61803398874989484 in z -. (floor z)
-  in
   let g = Array.make_matrix n n 0. in
-  for x = 0 to n-1 do for y = 0 to n-1 do g.(x).(y) <- hash x y done done ;
+  for x = 0 to n-1 do for y = 0 to n-1 do
+    if x != y then g.(x).(y) <- hash x y
+  done done ;
+  g
+
+let torus n =
+  let g = Array.make (n*n) [] in
+  let node origin (x, y) =
+    let dest = n*((x+n) mod n) + ((y+n) mod n) in (dest, hash origin dest)
+  in
+  for i = 0 to n-1 do
+    for j = 0 to n-1 do
+      let origin = n*i + j in
+      g.(origin) <- List.map (node origin) [i-1,j ; i,j-1 ; i,j+1; i+1,j]
+    done
+  done ;
   g

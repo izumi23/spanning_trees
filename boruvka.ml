@@ -37,5 +37,5 @@ let boruvka g =
 
 ;;
 
-let s, t = boruvka Graph.g1 in
-Printf.printf "%f, " s ; Print.print_list_pairs t
+(* let s, t = boruvka Graph.g1 in
+Printf.printf "%f, " s ; Print.print_list_pairs t *)

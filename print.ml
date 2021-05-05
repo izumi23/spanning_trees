@@ -41,3 +41,20 @@ let print_matrix a =
   print_line (n-1) ;
   print_string "|]\n"
 
+let print_graph g =
+  let n = Array.length g in
+  let print_line i =
+    let rec aux = function
+      | [] -> print_string "]"
+      | [(x, y)] -> Printf.printf "(%d, %f)]" x y
+      | (x, y) :: m -> Printf.printf "(%d, %f); " x y ; aux m
+    in
+    print_string "[" ; aux g.(i)
+  in
+  print_string "[|" ;
+  for i = 0 to n-2 do 
+    if i > 0 then print_string "  " ;
+    print_line i ; print_string ";\n" ;
+  done ;
+  print_string "  " ; print_line (n-1) ;
+  print_string "|]\n"

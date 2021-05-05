@@ -2,13 +2,13 @@ test : print graph prim kruskal boruvka test.ml
 	ocamlopt -o test merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx test.ml
 
 kruskal : merge print unionfind graph kruskal.ml
-	ocamlopt -o kruskal merge.cmx print.cmx unionfind.cmx graph.cmx kruskal.ml
+	ocamlopt -c kruskal.ml
 
 boruvka : print unionfind graph boruvka.ml
-	ocamlopt -o boruvka print.cmx unionfind.cmx graph.cmx boruvka.ml
+	ocamlopt -c boruvka.ml
 
 prim : print prioqueue graph prim.ml
-	ocamlopt -o prim print.cmx prioqueue.cmx graph.cmx prim.ml
+	ocamlopt -c prim.ml
 
 
 ### Structures de données
@@ -39,3 +39,13 @@ merge : merge.ml
 
 clean :
 	rm *.cm* *.o *.exe
+
+
+# kruskal : merge print unionfind graph kruskal.ml
+# 	ocamlopt -o kruskal merge.cmx print.cmx unionfind.cmx graph.cmx kruskal.ml
+
+# boruvka : print unionfind graph boruvka.ml
+# 	ocamlopt -o boruvka print.cmx unionfind.cmx graph.cmx boruvka.ml
+#
+# prim : print prioqueue graph prim.ml
+#	ocamlopt -o prim print.cmx prioqueue.cmx graph.cmx prim.ml
