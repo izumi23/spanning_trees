@@ -1,5 +1,5 @@
 test : print graph prim kruskal boruvka test.ml
-	ocamlopt -o test merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx test.ml
+	ocamlopt -o acm merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx test.ml
 
 kruskal : merge print unionfind graph kruskal.ml
 	ocamlopt -c kruskal.ml

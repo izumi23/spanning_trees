@@ -1,8 +1,9 @@
-let usage_msg = "append [-verbose] <file1> [<file2>] ... -o <output>"
+let usage_msg = "acm [-s][-r][-t][-seed] <graph_size>"
 
 let results = ref false
 let show_graph = ref false
 let torus = ref false
+let new_seed = ref false
 let n = ref 4
 
 (* let output_file = ref "" *)
@@ -14,11 +15,14 @@ let speclist =
   [("-s", Arg.Set show_graph, "Show the graph"); 
    ("-r", Arg.Set results, "Give detailed results");
    ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
+   ("-seed", Arg.Set new_seed, "Use a new random seed");
    (* ("-o", Arg.Set_string output_file, "Set output file name") *)
   ]
 
 let () =
   Arg.parse speclist anon_fun usage_msg;
+
+  if !new_seed then Random.self_init () ;
 
   let f () = flush stdout in
   print_string "Compiled.\n" ; f () ;
