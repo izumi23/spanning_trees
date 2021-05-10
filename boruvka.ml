@@ -3,6 +3,7 @@ let boruvka g =
   let n = Array.length g in
   let c = Unionfind.create n in
   let e = Array.make n (0, 0, max_float) in
+  let parent = Array.make n (-1) in
 
   let consider_edge x y p =
     let i = Unionfind.component c x and j = Unionfind.component c y in
@@ -20,6 +21,7 @@ let boruvka g =
         let i1 = Unionfind.component c x and j = Unionfind.component c y in
         if i1 = j then add_edges m s l (i+1)
         else (
+          Graph.merge_trees parent x y ;
           Unionfind.merge c i1 j ;
           add_edges (m+1) (s +. p) ((x, y) :: l) (i+1)
         )
@@ -27,7 +29,7 @@ let boruvka g =
   in
 
   let rec aux m s l x = function
-    | _ when m >= n-1 -> s, List.rev l
+    | _ when m >= n-1 -> s, List.rev l, parent
     | [] when x = n-1 ->
         let m1, s1, l1 = add_edges m s l 0 in aux m1 s1 l1 0 g.(0)
     | [] -> aux m s l (x+1) g.(x+1)

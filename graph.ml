@@ -79,3 +79,15 @@ let torus n =
     done
   done ;
   g
+
+let merge_trees parent x y =
+  let rec remonte l i =
+    if parent.(i) = -1 then i :: l
+    else remonte (i :: l) parent.(i)
+  in
+  let rec inverse = function
+    | [] | [_] -> ()
+    | i :: j :: l -> parent.(i) <- j ; inverse (j :: l)
+  in
+  inverse (remonte [] y) ;
+  parent.(y) <- x

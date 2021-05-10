@@ -6,6 +6,7 @@ let prim g =
   let q = Prioqueue.create n in
   let t = ref [] in
   let s = ref 0. in
+  let parent = Array.make n (-1) in
   Prioqueue.add q 0 0. ;
 
   let rec explore_voisins x = function
@@ -24,10 +25,11 @@ let prim g =
   for i = 0 to n-1 do
     let x = Prioqueue.pop q in
     integre.(x) <- true ;
+    parent.(x) <- fst (pred.(x)) ;
     if x > 0 then (t := (fst pred.(x), x) :: !t ; s := snd pred.(x) +. !s) ;
     explore_voisins x g.(x) ; 
   done ;
-  !s, List.rev !t
+  !s, List.rev !t, parent
 
 ;;
 

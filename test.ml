@@ -1,23 +1,55 @@
-let f () = flush stdout in
-print_string "Compiled.\n" ; f () ;
+let usage_msg = "append [-verbose] <file1> [<file2>] ... -o <output>"
 
-(* let a = Graph.complete_matrix 100 in
-Print.print_matrix a ;
-let g = Graph.matrix_to_array a in *)
-(* let g = Graph.complete_array 4000 in *)
-let g = Graph.torus 3 in
+let results = ref false
+let show_graph = ref false
+let torus = ref false
+let n = ref 4
 
-(* Print.print_graph g ; print_newline () ; *)
+(* let output_file = ref "" *)
 
-(* let print_results (s, t) =
-  Printf.printf "%f, " s ; Print.print_list_pairs t ; print_newline () ;
-  flush stdout 
-in *)
-(* let print_results (s, t) = Printf.printf "%f\n\n" s ; flush stdout in *)
+let anon_fun graph_size =
+  n := int_of_string graph_size
 
-print_string "Graph constructed.\n\n" ; f () ;
-(* print_string "prim:\n" ; f () ; print_results (Prim.prim g) ;
-print_string "boruvka:\n" ; f () ; print_results (Boruvka.boruvka g) ;
-print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g) ; *)
+let speclist =
+  [("-s", Arg.Set show_graph, "Show the graph"); 
+   ("-r", Arg.Set results, "Give detailed results");
+   ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
+   (* ("-o", Arg.Set_string output_file, "Set output file name") *)
+  ]
 
-Print.print_list_pairs (List.rev (Aldousbroder.aldous_broder g))
+let () =
+  Arg.parse speclist anon_fun usage_msg;
+
+  let f () = flush stdout in
+  print_string "Compiled.\n" ; f () ;
+
+  (* let g = Graph.complete_array 4000 in *)
+  let g = if !torus then Graph.torus !n else Graph.complete_array !n in
+
+  if !show_graph then (
+    if !torus then Print.print_graph g
+    else Print.print_matrix (Graph.complete_matrix !n) ;
+  print_newline ()
+  ) ;
+
+  (* let print_results (s, t) =
+    Printf.printf "%f, " s ; Print.print_list_pairs t ; print_newline () ;
+    flush stdout 
+  in *)
+
+  let print_results (s, t, p) =
+    if !results then (
+      Printf.printf "%f, " s ; Print.print_list_pairs t ; 
+      Print.print_array p ; print_newline ()
+    )
+    else Printf.printf "%f\n\n" s ;
+    flush stdout 
+  in
+  (* let print_results (s, t) = Printf.printf "%f\n\n" s ; flush stdout in *)
+
+  print_string "Graph constructed.\n\n" ; f () ;
+  print_string "prim:\n" ; f () ; print_results (Prim.prim g) ;
+  print_string "boruvka:\n" ; f () ; print_results (Boruvka.boruvka g) ;
+  print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g) ;
+
+  (* Print.print_list_pairs (List.rev (Aldousbroder.aldous_broder g)) *)
