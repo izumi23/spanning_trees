@@ -4,6 +4,7 @@
     },
     "files.exclude": {
         "**/**.cm**": true,
-        "**/**.o": true
+        "**/**.o": true,
+        ".gitignore": true
     }
 }

@@ -1,5 +1,5 @@
-test : print graph prim kruskal boruvka test.ml
-	ocamlopt -o test merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx test.ml
+test : print graph prim kruskal boruvka aldousbroder test.ml
+	ocamlopt -o test merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx test.ml
 
 kruskal : merge print unionfind graph kruskal.ml
 	ocamlopt -c kruskal.ml
@@ -9,6 +9,9 @@ boruvka : print unionfind graph boruvka.ml
 
 prim : print prioqueue graph prim.ml
 	ocamlopt -c prim.ml
+
+aldousbroder : aldousbroder.ml
+	ocamlopt -c aldousbroder.ml
 
 
 ### Structures de données
