@@ -7,5 +7,13 @@
         "**/**.cm**": true,
         "**/**.o": true,
         ".gitignore": true
-    }
+    },
+    "reason.path.ocamlmerlin": "bash -ic ./_opam/bin/ocamlmerlin",
+    "reason.path.ocamlfind": "bash -ic ./_opam/bin/ocamlfind",
+    "reason.path.ocpindent": "bash -ic ./_opam/bin/ocp-indent",
+    "reason.diagnostics.tools": [
+      "merlin"
+    ],
+  
+  
 }

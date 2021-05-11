@@ -46,8 +46,8 @@ let print_graph g =
   let print_line i =
     let rec aux = function
       | [] -> print_string "]"
-      | [(x, y)] -> Printf.printf "(%d, %f)]" x y
-      | (x, y) :: m -> Printf.printf "(%d, %f); " x y ; aux m
+      | [(x, y)] -> Printf.printf "(%d, %.3f)]" x y
+      | (x, y) :: m -> Printf.printf "(%d, %.3f); " x y ; aux m
     in
     print_string "[" ; aux g.(i)
   in

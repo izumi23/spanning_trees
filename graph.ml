@@ -91,3 +91,32 @@ let merge_trees parent x y =
   in
   inverse (remonte [] y) ;
   parent.(y) <- x
+
+let unorient g =
+  let n = Array.length g in
+  let rec aux i = function
+    | [] when i = n-1 -> ()
+    | [] -> aux (i+1) g.(i+1)
+    | (j, p) :: l -> if i < j then g.(j) <- (i, p) :: g.(j) ; aux i l
+  in
+  aux 0 g.(0)
+
+let simul_complete n =
+  let n0 = float_of_int n in
+  let avgd = log n0 in
+  let maxw = avgd /. n0 in
+  let g = Array.make n [] in
+  for i = 0 to n-1 do
+    let lambda = (1. -. (float_of_int i) /. n0) *. avgd in
+    let d = Distrib.simul_poisson lambda in
+    for k = 0 to d-1 do
+      let rec aux () =
+        let j = i+1 + Random.int (n-i-1) in
+        if List.exists (fun (y, p) -> y = j) g.(i) then aux ()
+        else j
+      in
+      g.(i) <- (aux (), Random.float maxw) :: g.(i)
+    done
+  done ;
+  unorient g ;
+  g

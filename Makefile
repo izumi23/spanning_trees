@@ -1,5 +1,8 @@
-test : print graph prim kruskal boruvka test.ml
-	ocamlopt -o acm merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx test.ml
+test : print distrib graph test.ml
+	ocamlopt -o test print.cmx distrib.cmx graph.cmx test.ml
+
+acm : print graph prim kruskal boruvka acm.ml
+	ocamlopt -o acm merge.cmx prioqueue.cmx unionfind.cmx print.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx acm.ml
 
 kruskal : merge print unionfind graph kruskal.ml
 	ocamlopt -c kruskal.ml
@@ -37,6 +40,9 @@ print : print.ml
 merge : merge.ml
 	ocamlopt -c merge.ml
 
+distrib : distrib.ml
+	ocamlopt -c distrib.ml
+
 
 ### Clean
 
@@ -52,3 +58,6 @@ clean :
 #
 # prim : print prioqueue graph prim.ml
 #	ocamlopt -o prim print.cmx prioqueue.cmx graph.cmx prim.ml
+#
+#test : print test.ml
+#	ocamlfind opt -o test -linkpkg -package owl print.cmx test.ml
