@@ -1,4 +1,4 @@
-libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx
+libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx
 
 
 test : $(libs) test.ml

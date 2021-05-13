@@ -7,8 +7,7 @@ let new_seed = ref false
 let sim = ref false
 let uniform = ref false
 let n = ref 4
-
-(* let output_file = ref "" *)
+let output_file = ref ""
 
 let anon_fun graph_size =
   n := int_of_string graph_size
@@ -18,6 +17,7 @@ let speclist =
    ("-r", Arg.Set results, "Give detailed results");
    ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
    ("-seed", Arg.Set new_seed, "Use a new random seed");
+   ("-o", Arg.Set_string output_file, "Set output file name");
   ]
 
 let () =
@@ -46,4 +46,6 @@ let () =
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
-  print_results (Aldousbroder.aldous_broder g)
+  let t, p = Aldousbroder.aldous_broder g in
+  print_results (t, p) ;
+  if !output_file != "" then Draw.draw_tree p !output_file

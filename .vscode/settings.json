@@ -6,7 +6,6 @@
     "files.exclude": {
         "**/**.cm**": true,
         "**/**.o": true,
-        ".gitignore": true
     },
     "reason.path.ocamlmerlin": "bash -ic ./_opam/bin/ocamlmerlin",
     "reason.path.ocamlfind": "bash -ic ./_opam/bin/ocamlfind",
