@@ -6,8 +6,7 @@ let torus = ref false
 let new_seed = ref false
 let sim = ref false
 let n = ref 4
-
-(* let output_file = ref "" *)
+let output_file = ref ""
 
 let anon_fun graph_size =
   n := int_of_string graph_size
@@ -19,7 +18,7 @@ let speclist =
    ("-seed", Arg.Set new_seed, "Use a new random seed");
    ("-sim", Arg.Set sim, "Simulate a complete graph");
    ("-simul", Arg.Set sim, "Simulate a complete graph");
-   (* ("-o", Arg.Set_string output_file, "Set output file name") *)
+   ("-o", Arg.Set_string output_file, "Set output file name")
   ]
 
 let () =
@@ -52,8 +51,11 @@ let () =
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
-  print_string "prim:\n" ; f () ; print_results (Prim.prim g) ;
+
+  print_string "prim:\n" ; f () ; 
+  let (s, t, p) = Prim.prim g in print_results (s, t, p) ;
+
   print_string "boruvka:\n" ; f () ; print_results (Boruvka.boruvka g) ;
   print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g) ;
 
-  (* Print.print_list_pairs (List.rev (Aldousbroder.aldous_broder g)) *)
+  if !output_file != "" then Draw.draw_tree p !output_file

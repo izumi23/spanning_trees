@@ -1,4 +1,4 @@
-let usage_msg = "acm [options] <graph_size>"
+let usage_msg = "acu [options] <graph_size>"
 
 let results = ref false
 let show_graph = ref false
@@ -47,5 +47,5 @@ let () =
 
   print_string "Graph constructed.\n\n" ; f () ;
   let t, p = Aldousbroder.aldous_broder g in
-  print_results (t, p) ;
+  if !results then print_results (t, p) ;
   if !output_file != "" then Draw.draw_tree p !output_file
