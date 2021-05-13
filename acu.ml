@@ -1,0 +1,49 @@
+let usage_msg = "acm [options] <graph_size>"
+
+let results = ref false
+let show_graph = ref false
+let torus = ref false
+let new_seed = ref false
+let sim = ref false
+let uniform = ref false
+let n = ref 4
+
+(* let output_file = ref "" *)
+
+let anon_fun graph_size =
+  n := int_of_string graph_size
+
+let speclist =
+  [("-show", Arg.Set show_graph, "Show the graph"); 
+   ("-r", Arg.Set results, "Give detailed results");
+   ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
+   ("-seed", Arg.Set new_seed, "Use a new random seed");
+  ]
+
+let () =
+  Arg.parse speclist anon_fun usage_msg;
+
+  if !new_seed then Random.self_init () ;
+
+  let f () = flush stdout in
+  print_string "Compiled.\n" ; f () ;
+
+  let g =
+    if !torus then Graph.torus !n
+    else Graph.complete_array !n 
+  in
+
+  if !show_graph then (
+    if !torus then Print.print_graph g
+    else Print.print_matrix (Graph.complete_matrix !n) ;
+  print_newline ()
+  ) ;
+
+  let print_results (t, p) =
+    Print.print_list_pairs t ; 
+    Print.print_array p ; print_newline () ;
+    flush stdout 
+  in
+
+  print_string "Graph constructed.\n\n" ; f () ;
+  print_results (Aldousbroder.aldous_broder g)
