@@ -47,5 +47,6 @@ let () =
 
   print_string "Graph constructed.\n\n" ; f () ;
   let t, p = Aldousbroder.aldous_broder g in
+  print_string "Uniform spanning tree found.\n\n" ; flush stdout ;
   if !results then print_results (t, p) ;
   if !output_file != "" then Draw.draw_tree p !output_file

@@ -56,6 +56,9 @@ let () =
   let (s, t, p) = Prim.prim g in print_results (s, t, p) ;
 
   print_string "boruvka:\n" ; f () ; print_results (Boruvka.boruvka g) ;
-  print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g) ;
+  
+  if !n <= 100 || not !torus && !n <= 10000 then (
+    print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g)
+  ) ;
 
   if !output_file != "" then Draw.draw_tree p !output_file
