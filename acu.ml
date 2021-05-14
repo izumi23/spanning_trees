@@ -5,7 +5,6 @@ let show_graph = ref false
 let torus = ref false
 let new_seed = ref false
 let sim = ref false
-let uniform = ref false
 let n = ref 4
 let output_file = ref ""
 

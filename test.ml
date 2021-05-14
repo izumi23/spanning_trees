@@ -1,9 +1,3 @@
-(* open Owl
-
-let () =
-  Printf.printf "%f\n" (Maths.sin 1.) ;
-  Print.print_array [|42; 43|] *)
-
 let usage_msg = "acu [options] <graph_size>"
 
 let show_graph = ref false
@@ -29,9 +23,8 @@ let () =
 
   if !new_seed then Random.self_init () ;
 
-  let g =
-    if !torus then Graph.torus !n
-    else Graph.complete_array !n 
-  in
-  
-  Draw.draw_graph g "t4"
+  let t4 = Graph.torus 3 in
+  let _,_,parent = Prim.prim t4 in
+  let res = Graph.height (Graph.construct_tree parent) in
+  Draw.draw_tree parent "t4" ;
+  Printf.printf "Height = %d\n" res 

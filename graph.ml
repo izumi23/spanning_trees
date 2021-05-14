@@ -120,3 +120,21 @@ let simul_complete n =
   done ;
   unorient g ;
   g
+
+let construct_tree parent =
+  let n = Array.length parent in
+  let root = ref 0 in
+  let children = Array.make n [] in
+  for i = 0 to n-1 do
+    let j = parent.(i) in
+    if j = -1 then root := i
+    else children.(j) <- i :: children.(j)
+  done ;
+  !root, children
+
+let height (root, children) =
+  let rec aux h = function
+    | [] -> h+1
+    | i :: l -> aux (max h (aux (-1) children.(i))) l
+  in
+  aux (-1) children.(root)

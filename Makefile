@@ -10,6 +10,9 @@ acm : $(libs) acm.ml
 acu : $(libs) acu.ml
 	ocamlopt -o $@ $^
 
+stats : $(libs) stats.ml
+	ocamlopt -o $@ $^
+
 
 ### Structures de données
 
@@ -33,4 +36,4 @@ unionfind.cmx : unionfind.mli unionfind.ml
 
 .PHONY: clean
 clean :
-	rm *.cm* *.o acm acu test || true
+	rm *.cm* *.o acm acu test stats || true
