@@ -1,6 +1,14 @@
+let print_list l =
+  let rec aux = function
+    | [] -> print_string "]\n"
+    | [x] -> Printf.printf "%d]\n" x
+    | x :: m -> Printf.printf "%d; " x ; aux m
+  in
+  print_string "[" ; aux l
+
 let print_list_pairs l =
   let rec aux = function
-    | [] -> print_string "]"
+    | [] -> print_string "]\n"
     | [(x, y)] -> Printf.printf "(%d, %d)]\n" x y
     | (x, y) :: m -> Printf.printf "(%d, %d); " x y ; aux m
   in
@@ -14,7 +22,7 @@ let print_array a =
 
 let print_list_triplets l =
   let rec aux = function
-    | [] -> print_string "]"
+    | [] -> print_string "]\n"
     | [(x, y, z)] -> Printf.printf "(%d, %d, %.0f)]\n" x y z
     | (x, y, z) :: m -> Printf.printf "(%d, %d, %.0f); " x y z ; aux m
   in
