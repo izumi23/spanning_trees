@@ -24,6 +24,7 @@ let speclist =
   [("-show", Arg.Set show_graph, "Show the graph"); 
     ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
     ("-seed", Arg.Set new_seed, "Use a new random seed");
+    ("-u", Arg.Set uniform, "Find a uniform spanning tree");
     ("-o", Arg.Set_string output_file, "Set output file name");
   ]
 
@@ -39,8 +40,16 @@ let () =
   for k = 0 to nb_tests - 1 do
     let size = !lower_bound + k* !step in
     Printf.printf "Size %d: " size ; flush stdout ;
-    let g = Graph.simul_complete size in
-    let _,_, parent = Prim.prim g in
+
+    let parent =
+      if !torus then let n0 = int_of_float (sqrt (float_of_int size)) in
+        if !uniform then snd (Aldousbroder.aldous_broder (Graph.torus n0))
+        else let _,_, p = Prim.prim (Graph.torus n0) in p
+      else
+        if !uniform then snd (Aldousbroder.aldous_broder_complete size)
+        else let _,_, p = Prim.prim (Graph.simul_complete size) in p
+    in
+
     let h = Graph.height (Graph.construct_tree parent) in
     Printf.printf "height %d\n" h ;
     x_axis.(k) <- size ;
@@ -54,5 +63,6 @@ let () =
     for k = 0 to nb_tests - 1 do
       p out "%d %d\n" x_axis.(k) y_axis.(k)
     done ;
-    close_out_noerr out
+    close_out_noerr out ;
+    Printf.printf "Wrote statresults/%s\n" !output_file
   )

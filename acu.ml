@@ -16,6 +16,8 @@ let speclist =
    ("-r", Arg.Set results, "Give detailed results");
    ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
    ("-seed", Arg.Set new_seed, "Use a new random seed");
+   ("-sim", Arg.Set sim, "Simulate a complete graph");
+   ("-simul", Arg.Set sim, "Simulate a complete graph");
    ("-o", Arg.Set_string output_file, "Set output file name");
   ]
 
@@ -29,6 +31,7 @@ let () =
 
   let g =
     if !torus then Graph.torus !n
+    else if !sim then Graph.complete_array 1
     else Graph.complete_array !n 
   in
 
@@ -45,7 +48,10 @@ let () =
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
-  let t, p = Aldousbroder.aldous_broder g in
+  let t, p =
+    if !sim then Aldousbroder.aldous_broder_complete !n
+    else Aldousbroder.aldous_broder g
+  in
   print_string "Uniform spanning tree found.\n\n" ; flush stdout ;
   if !results then print_results (t, p) ;
   if !output_file != "" then Draw.draw_tree p !output_file

@@ -1,5 +1,8 @@
 libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx
+.PHONY: all clean
 
+
+all : test acm acu stats
 
 test : $(libs) test.ml
 	ocamlopt -o $@ $^
@@ -34,6 +37,5 @@ unionfind.cmx : unionfind.mli unionfind.ml
 
 ### Clean
 
-.PHONY: clean
 clean :
 	rm *.cm* *.o acm acu test stats || true
