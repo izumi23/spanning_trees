@@ -4,3 +4,11 @@ acm
 acu
 test
 stats
+graphviz/t4*
+graphviz/t9*
+graphviz/t11*
+graphviz/t20*
+plots/t4*
+plots/t5*
+plots/test*
+statresults/stats1.txt
