@@ -54,4 +54,7 @@ let () =
   in
   print_string "Uniform spanning tree found.\n\n" ; flush stdout ;
   if !results then print_results (t, p) ;
-  if !output_file != "" then Draw.draw_tree p !output_file
+
+  if !output_file != "" then
+    if !torus then Plot.plot_tree p !output_file
+    else Draw.draw_tree p !output_file

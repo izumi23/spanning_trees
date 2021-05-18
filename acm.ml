@@ -61,4 +61,6 @@ let () =
     print_string "kruskal: " ; f () ; print_results (Kruskal.kruskal g)
   ) ;
 
-  if !output_file != "" then Draw.draw_tree p !output_file
+  if !output_file != "" then
+    if !torus then Plot.plot_tree p !output_file
+    else Draw.draw_tree p !output_file
