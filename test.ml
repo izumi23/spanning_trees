@@ -18,13 +18,23 @@ let speclist =
     ("-o", Arg.Set_string output_file, "Set output file name");
   ]
 
+
+let graph_ex = 9, [|
+  [];
+  [0,1; 4,1];
+  [];
+  [];
+  [2,1 ;3,1];
+  [1,2];
+  [];
+  [6,1];
+  [7,1];
+  [5,1; 8,1]
+|]
+
 let () =
   Arg.parse speclist anon_fun usage_msg;
 
   if !new_seed then Random.self_init () ;
+  print_int (Graph.routing_cost graph_ex) ; print_newline ()
 
-  let t4 = Graph.torus 3 in
-  let _,_,parent = Prim.prim t4 in
-  let res = Graph.height (Graph.construct_tree parent) in
-  Draw.draw_tree parent "t4" ;
-  Printf.printf "Height = %d\n" res 

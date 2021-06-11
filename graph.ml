@@ -138,3 +138,13 @@ let height (root, children) =
     | i :: l -> aux (max h (aux (-1) children.(i))) l
   in
   aux (-1) children.(root)
+
+let routing_cost (root, w_children) =
+  let n = Array.length w_children in
+  let rec aux total size x = function
+    | [] -> total, size + 1
+    | (y, c) :: l ->
+        let w, s = aux 0 0 y w_children.(y) in
+        aux (total + w + s*(n-s)*c) (size + s) x l
+  in
+  fst (aux 0 0 root w_children.(root))
