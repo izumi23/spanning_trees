@@ -50,7 +50,7 @@ let () =
         else let _,_, p = Prim.prim (Graph.simul_complete size) in p
     in
 
-    let h = Graph.height (Graph.construct_tree parent) in
+    let h = Tree.height (Tree.construct_tree parent) in
     Printf.printf "height %d\n" h ;
     x_axis.(k) <- size ;
     y_axis.(k) <- h

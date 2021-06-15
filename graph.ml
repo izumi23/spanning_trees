@@ -121,30 +121,3 @@ let simul_complete n =
   unorient g ;
   g
 
-let construct_tree parent =
-  let n = Array.length parent in
-  let root = ref 0 in
-  let children = Array.make n [] in
-  for i = 0 to n-1 do
-    let j = parent.(i) in
-    if j = -1 then root := i
-    else children.(j) <- i :: children.(j)
-  done ;
-  !root, children
-
-let height (root, children) =
-  let rec aux h = function
-    | [] -> h+1
-    | i :: l -> aux (max h (aux (-1) children.(i))) l
-  in
-  aux (-1) children.(root)
-
-let routing_cost (root, w_children) =
-  let n = Array.length w_children in
-  let rec aux total size x = function
-    | [] -> total, size + 1
-    | (y, c) :: l ->
-        let w, s = aux 0 0 y w_children.(y) in
-        aux (total + w + s*(n-s)*c) (size + s) x l
-  in
-  fst (aux 0 0 root w_children.(root))

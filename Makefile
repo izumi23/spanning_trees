@@ -1,20 +1,13 @@
-libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx
+libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx 
 .PHONY: all clean
 
 
-all : test acm acu stats
+all : test acm acu stats rct
 
-test : $(libs) test.ml
+
+test acm acu stats rct : % : $(libs) %.ml
 	ocamlopt -o $@ $^
 
-acm : $(libs) acm.ml
-	ocamlopt -o $@ $^
-
-acu : $(libs) acu.ml
-	ocamlopt -o $@ $^
-
-stats : $(libs) stats.ml
-	ocamlopt -o $@ $^
 
 
 ### Structures de données
