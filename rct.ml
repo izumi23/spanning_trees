@@ -70,9 +70,16 @@ let () =
 
   let t = Tree.construct_weighted_tree w_parent in
 
+  Printf.printf "(0)   %f\n"  (Tree.routing_cost t) ; f () ;
+
+  let step = !iterations / 100 in
+  let weight = ref max_float in
+  
   for i = 0 to !iterations - 1 do
-    let res = Markovroute.markov_transition g max_float t in
-    Printf.printf "%f\n" res
+    weight := Markovroute.markov_transition g !weight t ;
+    if i mod step = step - 1 then (
+      Printf.printf "(%d)   %f\n" (i+1) !weight ; f ()
+    )
   done ;
   print_newline () ;
 

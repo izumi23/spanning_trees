@@ -2,6 +2,7 @@
 *.o
 acm
 acu
+rct
 test
 stats
 graphviz/t4*
