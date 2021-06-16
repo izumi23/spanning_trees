@@ -8,6 +8,7 @@ let sim = ref false
 let n = ref 4
 let output_file = ref ""
 let iterations = ref 1000
+let mini = ref false
 
 let anon_fun graph_size =
   n := int_of_string graph_size
@@ -20,7 +21,8 @@ let speclist =
    ("-sim", Arg.Set sim, "Simulate a complete graph");
    ("-simul", Arg.Set sim, "Simulate a complete graph");
    ("-o", Arg.Set_string output_file, "Set output file name");
-   ("-i", Arg.Set_int iterations, "Set a number of iterations")
+   ("-i", Arg.Set_int iterations, "Set a number of iterations");
+   ("-m", Arg.Set mini, "Start with the minimum spanning tree");
   ]
 let graph_ex = 9, [|
   [];
@@ -63,8 +65,16 @@ let () =
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
-  let edges, parent = Aldousbroder.aldous_broder g in
-  print_string "Uniform spanning tree found.\n\n" ; flush stdout ;
+
+  let edges, parent = 
+    if !mini then let _, e, p = Prim.prim g in e, p
+    else Aldousbroder.aldous_broder g
+  in
+
+  if !mini then print_string "Minimum spanning tree found.\n\n"
+  else print_string "Uniform spanning tree found.\n\n" ;
+  f () ;
+
   if !results then print_results (edges, parent) ;
 
   let t = Tree.construct_tree parent in

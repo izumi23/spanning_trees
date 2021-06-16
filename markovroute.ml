@@ -21,11 +21,12 @@ let reverse_aldous_transform z x t =
   t.root <- x
 
 let markov_transition g cost t =
+  let n0 = float_of_int (Array.length g) in
   let x = t.root in
   let y, _ = List.nth g.(x) (Random.int (List.length g.(x))) in
   let z = aldous_transform y t in
   let new_cost = Tree.routing_cost g t in
-  if Random.float 1. < (new_cost -. cost) /. cost *. 1000. then (
+  if Random.float 1. < (new_cost -. cost) /. n0 then (
     reverse_aldous_transform z x t ;
     cost
   )

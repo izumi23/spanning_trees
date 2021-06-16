@@ -15,9 +15,10 @@ let plot_tree g filename =
   Sys.chdir "plots" ;
   write_tree g (filename ^ ".dat") ;
   Printf.printf "Wrote plots/%s.dat\n" filename ; flush stdout ;
+  let s = int_of_float (sqrt (float_of_int (Array.length g))) in
   let comd = Printf.sprintf
-    "gnuplot -p -e \"filename='%s.dat'; fileout='%s.png'\" config.gnu"
-    filename filename
+    "gnuplot -p -e \"filename='%s.dat'; fileout='%s.png'; sze=%d\" config1.gnu"
+    filename filename (3*s-2)
   in
   Printf.printf "%s\n" comd ; flush stdout ;
   ignore (Sys.command comd) ;
