@@ -1,7 +1,7 @@
-type weighted_tree = {
-  parent : (int * float) array ;
+type double_linked_tree = {
+  parent : int array ;
   mutable root : int ;
-  children : (int * float) list array
+  children : int list array
 }
 
 let construct_tree parent =
@@ -13,8 +13,8 @@ let construct_tree parent =
     if j = -1 then root := i
     else children.(j) <- i :: children.(j)
   done ;
-  !root, children
-
+  {parent = parent ; root = !root ; children = children}
+(* 
 let construct_weighted_tree w_parent =
   let n = Array.length w_parent in
   let root = ref 0 in
@@ -24,21 +24,23 @@ let construct_weighted_tree w_parent =
     if j = -1 then root := i
     else w_children.(j) <- (i, c) :: w_children.(j)
   done ;
-  {parent = w_parent ; root = !root ; children = w_children}
+  {parent = w_parent ; root = !root ; children = w_children} *)
 
-let height (root, children) =
+let height t =
   let rec aux h = function
     | [] -> h+1
-    | i :: l -> aux (max h (aux (-1) children.(i))) l
+    | i :: l -> aux (max h (aux (-1) t.children.(i))) l
   in
-  aux (-1) children.(root)
+  aux (-1) t.children.(t.root)
 
-let routing_cost t =
+let routing_cost g t =
+  let f x y = snd (List.find (fun u -> fst u = y) g.(x)) in
   let n = float_of_int (Array.length t.children) in
   let rec aux total size x = function
     | [] -> total, size + 1
-    | (y, c) :: l ->
+    | y :: l ->
         let w, s = aux 0. 0 y t.children.(y) in
+        let c = f x y in
         let s0 = float_of_int s in
         aux (total +. w +. s0 *. (n -. s0) *. c) (size + s) x l
   in

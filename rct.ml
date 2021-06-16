@@ -56,21 +56,20 @@ let () =
   print_newline ()
   ) ;
 
-  let print_results (t, w_parent) =
-    Print.print_list_pairs t ; 
-    Print.print_array (Array.map fst w_parent) ; print_newline () ;
+  let print_results (edges, parent) =
+    Print.print_list_pairs edges ; 
+    Print.print_array parent ; print_newline () ;
     flush stdout 
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
-  let u, w_parent = Aldousbroder.aldous_broder_weighted g
-  in
+  let edges, parent = Aldousbroder.aldous_broder g in
   print_string "Uniform spanning tree found.\n\n" ; flush stdout ;
-  if !results then print_results (u, w_parent) ;
+  if !results then print_results (edges, parent) ;
 
-  let t = Tree.construct_weighted_tree w_parent in
+  let t = Tree.construct_tree parent in
 
-  Printf.printf "(0)   %f\n"  (Tree.routing_cost t) ; f () ;
+  Printf.printf "(0)   %f\n" (Tree.routing_cost g t) ; f () ;
 
   let step = !iterations / 100 in
   let weight = ref max_float in
@@ -84,7 +83,6 @@ let () =
   print_newline () ;
 
   if !output_file != "" then
-    let p = Array.map fst t.parent in
-    if !torus then Plot.plot_tree p !output_file
-    else Draw.draw_tree p !output_file
+    if !torus then Plot.plot_tree parent !output_file
+    else Draw.draw_tree parent !output_file
 
