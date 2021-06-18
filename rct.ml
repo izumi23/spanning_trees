@@ -8,7 +8,7 @@ let sim = ref false
 let n = ref 4
 let output_file = ref ""
 let iterations = ref 1000
-let mini = ref false
+let minitree = ref false
 
 let anon_fun graph_size =
   n := int_of_string graph_size
@@ -22,7 +22,7 @@ let speclist =
    ("-simul", Arg.Set sim, "Simulate a complete graph");
    ("-o", Arg.Set_string output_file, "Set output file name");
    ("-i", Arg.Set_int iterations, "Set a number of iterations");
-   ("-m", Arg.Set mini, "Start with the minimum spanning tree");
+   ("-m", Arg.Set minitree, "Start with the minimum spanning tree");
   ]
 let graph_ex = 9, [|
   [];
@@ -67,11 +67,11 @@ let () =
   print_string "Graph constructed.\n\n" ; f () ;
 
   let edges, parent = 
-    if !mini then let _, e, p = Prim.prim g in e, p
+    if !minitree then let _, e, p = Prim.prim g in e, p
     else Aldousbroder.aldous_broder g
   in
 
-  if !mini then print_string "Minimum spanning tree found.\n\n"
+  if !minitree then print_string "Minimum spanning tree found.\n\n"
   else print_string "Uniform spanning tree found.\n\n" ;
   f () ;
 
@@ -83,6 +83,8 @@ let () =
 
   let step = !iterations / 100 in
   let weight = ref max_float in
+  let sum = ref 0. in
+  let mini = ref max_float in
   
   for i = 0 to !iterations - 1 do
     weight := Markovroute.markov_transition g !weight t ;
