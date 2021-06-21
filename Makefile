@@ -1,11 +1,11 @@
-libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx 
+libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx markovpath.cmx
 .PHONY: all clean
 
 
-all : test acm acu stats rct
+all : test acm acu stats rct rhp
 
 
-test acm acu stats rct : % : $(libs) %.ml
+test acm acu stats rct rhp : % : $(libs) %.ml
 	ocamlopt -o $@ $^
 
 

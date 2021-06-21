@@ -1,10 +1,7 @@
 let usage_msg = "test [options] <graph_size>"
 
-let results = ref false
-let show_graph = ref false
 let torus = ref false
 let new_seed = ref false
-let sim = ref false
 let n = ref 4
 let output_file = ref ""
 let iterations = ref 1000
@@ -13,29 +10,13 @@ let minitree = ref false
 let anon_fun graph_size =
   n := int_of_string graph_size
 
-let speclist =
-  [("-show", Arg.Set show_graph, "Show the graph"); 
-   ("-r", Arg.Set results, "Give detailed results");
+let speclist = [
    ("-t", Arg.Set torus, "Make a torus graph instead of a complete one");
    ("-seed", Arg.Set new_seed, "Use a new random seed");
-   ("-sim", Arg.Set sim, "Simulate a complete graph");
-   ("-simul", Arg.Set sim, "Simulate a complete graph");
    ("-o", Arg.Set_string output_file, "Set output file name");
    ("-i", Arg.Set_int iterations, "Set a number of iterations");
    ("-m", Arg.Set minitree, "Start with the minimum spanning tree");
   ]
-let graph_ex = 9, [|
-  [];
-  [0,1; 4,1];
-  [];
-  [];
-  [2,1 ;3,1];
-  [1,2];
-  [];
-  [6,1];
-  [7,1];
-  [5,1; 8,1]
-|]
 
 
 let () =
@@ -48,25 +29,12 @@ let () =
 
   let g =
     if !torus then Graph.torus !n
-    else if !sim then Graph.complete_array 1
     else Graph.complete_array !n 
-  in
-
-  if !show_graph then (
-    if !torus then Print.print_graph g
-    else Print.print_matrix (Graph.complete_matrix !n) ;
-  print_newline ()
-  ) ;
-
-  let print_results (edges, parent) =
-    Print.print_list_pairs edges ; 
-    Print.print_array parent ; print_newline () ;
-    flush stdout 
   in
 
   print_string "Graph constructed.\n\n" ; f () ;
 
-  let edges, parent = 
+  let _, parent = 
     if !minitree then let _, e, p = Prim.prim g in e, p
     else Aldousbroder.aldous_broder g
   in
@@ -74,8 +42,6 @@ let () =
   if !minitree then print_string "Minimum spanning tree found.\n\n"
   else print_string "Uniform spanning tree found.\n\n" ;
   f () ;
-
-  if !results then print_results (edges, parent) ;
 
   let t = Tree.construct_tree parent in
 
@@ -88,11 +54,16 @@ let () =
   
   for i = 0 to !iterations - 1 do
     weight := Markovroute.markov_transition g !weight t ;
+    if i >= !iterations / 2 then sum := !sum +. !weight ;
+    mini := min !mini !weight ;
     if i mod step = step - 1 then (
-      Printf.printf "(%d)   %f\n" (i+1) !weight ; f ()
+      Printf.printf "(%d)   %f      min = %f\n" (i+1) !weight !mini ; f ()
     )
   done ;
   print_newline () ;
+
+  let avg = !sum /. float_of_int (!iterations / 2) in
+  Printf.printf "Second half average: %f\nMinimum: %f\n\n" avg !mini ;
 
   if !output_file != "" then
     if !torus then Plot.plot_tree parent !output_file
