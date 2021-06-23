@@ -64,8 +64,8 @@ let backbite p dir =
   if x != y && p.parent.(y) != x then (
     let z = p.parent.(y) in
     revert p z x ;
-    del p y z ;
     add p y x ;
+    del p y z ;
     p.root <- z
   )
 
@@ -76,8 +76,8 @@ let backbite_leaf p dir =
   if x != y && p.child.(y) != x then (
     let z = p.child.(y) in
     revert p x z ;
-    del p z y ;
     add p x y ;
+    del p z y ;
     p.leaf <- z
   )
 
