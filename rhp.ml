@@ -2,19 +2,21 @@ let usage_msg = "rhp [options] <graph_size>"
 
 let torus = ref false
 let new_seed = ref false
+let m = ref 8
 let n = ref 8
-let output_file = ref ""
 let iterations = ref 1000
 let minitree = ref false
 let sameends = ref false
 let playing = ref false
+let arg_position = ref 0
 
 let anon_fun graph_size =
-  n := int_of_string graph_size
+  let r = if !arg_position = 0 then m else n in
+  r := int_of_string graph_size ;
+  incr arg_position
 
 let speclist = [
    ("-seed", Arg.Set new_seed, "Use a new random seed");
-   ("-o", Arg.Set_string output_file, "Set output file name");
    ("-i", Arg.Set_int iterations, "Set a number of iterations");
    ("-same", Arg.Set sameends, "Path must have same ends as original");
    ("-game", Arg.Set playing, "Launch interactive game");
@@ -29,7 +31,7 @@ let () =
   let f () = flush stdout in
   print_string "Compiled.\n" ; f () ;
 
-  let p = Markovpath.default_path !n in
+  let p = Markovpath.default_path !m !n in
 
   let i = ref 0 in
   
@@ -40,22 +42,4 @@ let () =
     if not !sameends || Markovpath.same_ends p then incr i  
   done ;
 
-  if !output_file != "" then
-    Plot.plot_tree p.parent !output_file ;
-
-  if !playing then (
-
-    let orientation = ref 0 in
-    Game.init !n ;
-    
-    while true do
-
-      Game.draw_path p.parent p.root p.leaf !orientation ;
-      Printf.printf "%d\n" !orientation ; f () ;
-      let toggle, move = Game.wait_for_input () in
-      if toggle then orientation := 1 - !orientation
-      else if move >= 0 then Markovpath.transition p !orientation move 
-  
-    done
-
-  )
+  if !playing then Game.play (Game.new_game_env !m !n p)

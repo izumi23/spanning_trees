@@ -1,28 +1,40 @@
 type rooted_path = {
-  side : int ;
-  mutable root : int ;
-  mutable leaf : int ;
-  parent : int array ;
-  child : int array
+  height : int ;
+  width : int ;
+  node : int array ;
+  index : int array
 }
 
-let new_rooted_path n = {
-  side = n ;
-  root = n*n-1 ;
-  leaf = 0 ;
-  parent = Array.make (n*n) (-1) ;
-  child = Array.make (n*n) (-1)
+
+let new_rooted_path m n  = {
+  height = m ;
+  width = n ;
+  node = Array.make (m*n) (-1) ;
+  index = Array.make (m*n) (-1)
 } 
 
-let add p x y = 
-  p.parent.(x) <- y ;
-  p.child.(y) <- x
 
-let del p x y =
-  if p.parent.(x) = y then p.parent.(x) <- -1 ;
-  if p.child.(y) = x then p.child.(y) <- -1
+let default_path m n =
 
-let displacement dir x n =
+  let next x =
+    let i, j = x / n, x mod n in
+    if j = n-1 && i mod 2 = 0 then n*(i+1) + j
+    else if j = 0 && i mod 2 = 1 then n*(i+1) + j
+    else if i mod 2 = 0 then n*i + j+1
+    else n*i + j-1
+  in
+
+  let p = new_rooted_path m n in
+  let current_node = ref 0 in
+  for i = 0 to m*n-1 do
+    p.index.(!current_node) <- i ;
+    p.node.(i) <- !current_node ;
+    if i < m*n-1 then current_node := next !current_node
+  done ;
+  p   
+
+
+let displacement dir x m n =
   let i, j = x / n, x mod n in
   let next i j = function
     | 0 -> i-1, j
@@ -31,61 +43,40 @@ let displacement dir x n =
     | _ -> i+1, j
   in
   let i1, j1 = next i j dir in
-  if (i1 >= 0 && i1 < n && j1 >= 0 && j1 < n) then n*i1 + j1
+  if (i1 >= 0 && i1 < m && j1 >= 0 && j1 < n) then n*i1 + j1
   else x
 
-let revert p origin dest =
-  let rec aux x y =
-    let z = p.parent.(y) in
-    add p y x ;
-    if y != dest then aux y z
-  in
-  aux origin p.parent.(origin)
 
-let default_path n =
-  let next x =
-    let i, j = x / n, x mod n in
-    if j = n-1 && i mod 2 = 0 then n*(i+1) + j
-    else if j = 0 && i mod 2 = 1 then n*(i+1) + j
-    else if i mod 2 = 0 then n*i + j+1
-    else n*i + j-1
-  in
-  let p = new_rooted_path n in
-  for x = 0 to n*n-1 do
-    if next x < n*n then add p x (next x)
-  done ;
-  if n mod 2 = 0 then p.root <- n*(n-1) ;
-  p
+let swap p i j =
+  let u = p.node.(i) and v = p.node.(j) in
+  p.node.(i) <- v ; p.node.(j) <- u ;
+  p.index.(u) <- j ; p.index.(v) <- i
+
+
+let revert p i j =
+  let range = (j-i+1)/2 in
+  for k = 0 to range-1 do swap p (i+k) (j-k) done
+
 
 let backbite p dir =
-  let n = p.side in
-  let x = p.root in
-  let y = displacement dir x n in
-  if x != y && p.parent.(y) != x then (
-    let z = p.parent.(y) in
-    revert p z x ;
-    add p y x ;
-    del p y z ;
-    p.root <- z
-  )
+  let y = displacement dir p.node.(0) p.height p.width in
+  let j = p.index.(y) in
+  revert p 0 (j-1)
+
 
 let backbite_leaf p dir =
-  let n = p.side in
-  let x = p.leaf in
-  let y = displacement dir x n in
-  if x != y && p.child.(y) != x then (
-    let z = p.child.(y) in
-    revert p x z ;
-    add p x y ;
-    del p z y ;
-    p.leaf <- z
-  )
+  let t = p.height * p.width in
+  let y = displacement dir p.node.(t-1) p.height p.width in
+  let j = p.index.(y) in
+  revert p (j+1) (t-1)
+
 
 let transition p nature dir =
   if nature = 0 then backbite p dir
   else backbite_leaf p dir
 
+
 let same_ends p =
-  let n = p.side in
-  let root = if n mod 2 = 0 then n*(n-1) else n*n-1 in
-  p.leaf = 0 && p.root = root
+  let m = p.height and n = p.width in
+  let root = if n mod 2 = 0 then n*(m-1) else n*m-1 in
+  p.node.(0) = 0 && p.node.(n*m-1)= root
