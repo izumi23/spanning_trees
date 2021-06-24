@@ -80,3 +80,11 @@ let same_ends p =
   let m = p.height and n = p.width in
   let root = if n mod 2 = 0 then n*(m-1) else n*m-1 in
   p.node.(0) = 0 && p.node.(n*m-1)= root
+
+
+let direction_other_end p orientation =
+  let t = p.width * p.height - 1 in
+  let x = p.node.(t * orientation) in
+  let y = p.node.(t * (1 - orientation)) in
+  let good d = displacement d x p.height p.width = y in
+  List.find_opt good [0; 1; 2; 3] 

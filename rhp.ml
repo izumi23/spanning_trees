@@ -9,6 +9,7 @@ let minitree = ref false
 let sameends = ref false
 let playing = ref false
 let arg_position = ref 0
+let delay = ref 0.
 
 let anon_fun graph_size =
   let r = if !arg_position = 0 then m else n in
@@ -20,6 +21,7 @@ let speclist = [
    ("-i", Arg.Set_int iterations, "Set a number of iterations");
    ("-same", Arg.Set sameends, "Path must have same ends as original");
    ("-game", Arg.Set playing, "Launch interactive game");
+   ("-delay", Arg.Set_float delay, "Set delay for automatic moves");
   ]
 
 
@@ -42,4 +44,4 @@ let () =
     if not !sameends || Markovpath.same_ends p then incr i  
   done ;
 
-  if !playing then Game.play (Game.new_game_env !m !n p)
+  if !playing then Game.play !m !n p !delay
