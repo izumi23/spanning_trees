@@ -30,9 +30,6 @@ let () =
 
   if !new_seed then Random.self_init () ;
 
-  let f () = flush stdout in
-  print_string "Compiled.\n" ; f () ;
-
   let p = Markovpath.default_path !m !n in
 
   let i = ref 0 in

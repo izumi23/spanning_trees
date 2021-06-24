@@ -1,14 +1,20 @@
-libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx markovpath.cmx types.cmx strat.cmx game.cmx
+libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx
+libs-rhp = markovpath.cmx gamegraphics.cmx game.cmx
+
 .PHONY: all clean
 CC = ocamlfind opt
 pkg = -linkpkg -package graphics -package unix
 
 
+
+rhp : $(libs-rhp) rhp.ml
+	$(CC) $(pkg) -o $@ $^
+
+
 all : test acm acu stats rct rhp
 
-
-test acm acu stats rct rhp : % : $(libs) %.ml
-	$(CC) $(pkg) -o $@ $^
+test acm acu stats rct : % : $(libs) %.ml
+	$(CC) -o $@ $^
 
 
 
@@ -26,8 +32,11 @@ unionfind.cmx : unionfind.mli unionfind.ml
 
 ### Jeu avec interface graphique
 
-game.cmx : game.ml
+game.cmx : gamegraphics.cmx game.ml
 	$(CC) $(pkg) -c game.ml
+
+gamegraphics.cmx : gamegraphics.ml
+	$(CC) $(pkg) -c gamegraphics.ml
 
 
 ### Autres
@@ -39,4 +48,4 @@ game.cmx : game.ml
 ### Clean
 
 clean :
-	rm *.cm* *.o acm acu test stats || true
+	rm *.cm* *.o acm acu test stats rct rhp || true
