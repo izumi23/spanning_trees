@@ -14,22 +14,21 @@ let new_rooted_path m n  = {
 } 
 
 
+let default_path_next x n =
+  let i, j = x / n, x mod n in
+  if j = n-1 && i mod 2 = 0 then n*(i+1) + j
+  else if j = 0 && i mod 2 = 1 then n*(i+1) + j
+  else if i mod 2 = 0 then n*i + j+1
+  else n*i + j-1
+
+
 let default_path m n =
-
-  let next x =
-    let i, j = x / n, x mod n in
-    if j = n-1 && i mod 2 = 0 then n*(i+1) + j
-    else if j = 0 && i mod 2 = 1 then n*(i+1) + j
-    else if i mod 2 = 0 then n*i + j+1
-    else n*i + j-1
-  in
-
   let p = new_rooted_path m n in
   let current_node = ref 0 in
   for i = 0 to m*n-1 do
     p.index.(!current_node) <- i ;
     p.node.(i) <- !current_node ;
-    if i < m*n-1 then current_node := next !current_node
+    if i < m*n-1 then current_node := default_path_next !current_node n
   done ;
   p   
 
