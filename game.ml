@@ -9,7 +9,7 @@ type game_state = {
 let new_game_env m n p delay = {
   height = m ;
   width = n ;
-  square_size = 72 ;
+  square_size = min 72 (720/m) ;
   path = p ;
   orientation = 0 ;
   moves = [] ;
@@ -124,8 +124,9 @@ let advance env state =
 
 let rec automatic_strat env state =
   let rec aux () =
+    check_last_known env state ;
     let lk = state.last_known in
-    if lk != env.width * env.height - 1 then (
+    if lk / env.width < env.height - 1 then (
       advance env state ;
       if state.last_known != lk then aux ()
       else (

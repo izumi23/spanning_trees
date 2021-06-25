@@ -32,7 +32,7 @@ let init env =
   Graphics.set_window_title "Hamiltonian path game" ;
   Graphics.auto_synchronize false ;
   repaint env ;
-  Graphics.set_line_width 10
+  Graphics.set_line_width (min 10 (100/env.path.height)) 
 
 
 let point square_size x y =
@@ -49,7 +49,7 @@ let draw_line sq n i j =
 let draw_endpoint sq n i orientation =
   let x, y = point sq (i mod n) (i/n) in
   if orientation = 0 then Graphics.set_color Graphics.green ;
-  Graphics.fill_circle x y 20 ;
+  Graphics.fill_circle x y (min 20 (400/n)) ;
   if orientation = 0 then Graphics.set_color Graphics.white
 
 
