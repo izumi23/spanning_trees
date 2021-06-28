@@ -22,6 +22,24 @@ let new_game_state () = {
 }
 
 
+let goal_path_next x n =
+  let y = Markovpath.default_path_next x n in
+  if y mod n = 0 then y + n + 1 else y
+
+
+let check_last_known env state =
+  let p = env.path in
+  let m = p.height and n = p.width in
+  let rec aux x =
+    let y = goal_path_next x n in
+    if y < m*n && abs (p.index.(x) - p.index.(y)) = 1 then (
+      state.last_known <- y ;
+      aux y
+    )
+  in
+  aux 1
+
+
 let rec wait_for_input () =
   while Graphics.key_pressed () do ignore (Graphics.read_key ()) done ;
   let k = Graphics.read_key () in
@@ -39,45 +57,28 @@ let rec wait_for_input () =
     | _ -> wait_for_input ()
 
 
-let execute env move = 
+let execute env state move = 
   let rec aux = function
     | Toggle -> env.orientation <- 1 - env.orientation
     | Backbite dir ->
         Markovpath.transition env.path env.orientation dir
     | _ -> ()
   in
-  aux move ; draw_path env
+  aux move ; check_last_known env state ; 
+  draw_path env state.last_known
 
 
-let execute_all env l =
+let execute_all env state l =
   let execute_with_pause env move =
-    execute env move ; env.wait ()
+    execute env state move ; env.wait ()
   in
   List.iter (execute_with_pause env) l
 
 
-let goal_path_next x n =
-  let y = Markovpath.default_path_next x n in
-  if y mod n = 0 then y + n + 1 else y
-
-
-let check_last_known env state =
-  let p = env.path in
-  let m = p.height and n = p.width in
-  let rec aux x =
-    let y = goal_path_next x n in
-    if y < m*n && abs (p.index.(x) - p.index.(y)) = 1 then (
-      state.last_known <- y ;
-      aux y
-    )
-  in
-  aux state.last_known
-
-
-let step_along_cycle env =
+let step_along_cycle env state =
   match Markovpath.direction_other_end env.path env.orientation with
     | None -> ()
-    | Some dir -> execute_all env [Backbite dir; Toggle]
+    | Some dir -> execute_all env state [Backbite dir; Toggle]
 
 
 let walk_along_cycle env state =
@@ -88,21 +89,21 @@ let walk_along_cycle env state =
     if env.path.node.((m*n-1) * env.orientation) != goal then
       match Markovpath.direction_other_end env.path env.orientation with
       | None -> ()
-      | Some dir -> execute_all env [Backbite dir; Toggle] ; aux ()
+      | Some dir -> execute_all env state [Backbite dir; Toggle] ; aux ()
   in
   aux () ;
   let goal_up = Markovpath.displacement 3 goal m n in
   let other_end = (m*n-1) * (1 - env.orientation) in
   if env.path.node.(other_end) = goal_up then
-    execute_all env [Toggle; Backbite 0]
+    execute_all env state [Toggle; Backbite 0]
 
     
-let pull_path env way =
+let pull_path env state way =
   let seq = 
     if way = 0 then [Backbite 0; Toggle; Backbite 1; Backbite 2]
     else [Backbite 0; Toggle; Backbite 2; Backbite 1]
   in
-  execute_all env seq
+  execute_all env state seq
 
 
 let advance env state =
@@ -117,9 +118,9 @@ let advance env state =
     p.index.(y) = o*(m*n-1) && (2*o-1)*(p.index.(x) - p.index.(z)) < 0
   in
   if cond env.orientation then
-    execute env (Backbite (3-dir))
+    execute env state (Backbite (3-dir))
   else if cond (1 - env.orientation) then
-    execute_all env [Toggle; Backbite (3-dir)]
+    execute_all env state [Toggle; Backbite (3-dir)]
 
 
 let rec automatic_strat env state =
@@ -128,6 +129,7 @@ let rec automatic_strat env state =
     let lk = state.last_known in
     if lk / env.width < env.height - 1 then (
       advance env state ;
+      check_last_known env state ;
       if state.last_known != lk then aux ()
       else (
         walk_along_cycle env state ;
@@ -141,9 +143,9 @@ let rec automatic_strat env state =
 
 
 and strat env state = function
-  | 0 -> step_along_cycle env
-  | 1 -> pull_path env 0
-  | 2 -> pull_path env 1
+  | 0 -> step_along_cycle env state
+  | 1 -> pull_path env state 0
+  | 2 -> pull_path env state 1
   | 3 -> advance env state
   | 4 -> walk_along_cycle env state
   | _ -> automatic_strat env state
@@ -152,7 +154,7 @@ and strat env state = function
 and game_loop env state =
   let input_move = wait_for_input () in
   match input_move with
-  | Toggle | Backbite _ -> execute env input_move
+  | Toggle | Backbite _ -> execute env state input_move
   | Strat k -> strat env state k
 
   
@@ -160,7 +162,7 @@ let play m n p delay =
   let env = new_game_env m n p delay in
   let state = new_game_state () in
   init env ;
-  draw_path env ;
+  draw_path env state.last_known ;
   while true do game_loop env state done
 
 (* 
