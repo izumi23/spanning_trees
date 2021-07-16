@@ -67,7 +67,7 @@ let complete_matrix n =
   done done ;
   g
 
-let torus n =
+(* let torus n =
   let g = Array.make (n*n) [] in
   let node origin (x, y) =
     let dest = n*((x+n) mod n) + ((y+n) mod n) in (dest, hash origin dest)
@@ -78,7 +78,7 @@ let torus n =
       g.(origin) <- List.map (node origin) [i-1,j ; i,j-1 ; i,j+1; i+1,j]
     done
   done ;
-  g
+  g *)
 
 let merge_trees parent x y =
   let rec remonte l i =
@@ -101,7 +101,7 @@ let unorient g =
   in
   aux 0 g.(0)
 
-let simul_complete n =
+(* let simul_complete n =
   let n0 = float_of_int n in
   let avgd = 2. *. log n0 in
   let maxw = avgd /. n0 in
@@ -119,5 +119,55 @@ let simul_complete n =
     done
   done ;
   unorient g ;
+  g *)
+
+let simul_complete n =
+  let n0 = float_of_int n in
+  let nb_edges = int_of_float (2. *. n0 *. log n0) in
+  let max_weight = 4. *. log n0 /. n0 in
+  let g = Array.make n [] in
+  for k = 0 to nb_edges - 1 do
+    let rec aux () =
+      let i = Random.int n and j = Random.int n in
+      if i = j || List.exists (fun (y, p) -> y = j) g.(i) then aux ()
+      else (
+        let p = Random.float max_weight in 
+        g.(i) <- (j, p) :: g.(i) ;
+        g.(j) <- (i, p) :: g.(j)
+      )
+    in
+    aux ()
+  done ;
   g
 
+
+let torus n =
+  let g = Array.make (n*n) [] in
+  let node (x, y) = n*((x+n) mod n) + (y+n) mod n in
+  for i = 0 to n-1 do
+    for j = 0 to n-1 do
+      let origin = n*i + j in
+      let dest_list = List.map node [i-1,j ; i,j-1 ; i,j+1; i+1,j] in
+      let aux dest =
+        if origin < dest then (
+          let p = Random.float 1. in
+          g.(origin) <- (dest, p) :: g.(origin) ;
+          g.(dest) <- (origin, p) :: g.(dest)
+        )
+      in
+      List.iter aux dest_list
+    done
+  done ;
+  g
+
+
+let complete n =
+  let g = Array.make n [] in
+  for i = 0 to n-1 do
+    for j = i+1 to n-1 do
+      let p = Random.float 1. in
+      g.(i) <- (j, p) :: g.(i) ;
+      g.(j) <- (i, p) :: g.(j)
+    done
+  done ;
+  g

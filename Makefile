@@ -1,5 +1,7 @@
 libs = merge.cmx prioqueue.cmx unionfind.cmx print.cmx distrib.cmx tree.cmx graph.cmx prim.cmx kruskal.cmx boruvka.cmx aldousbroder.cmx draw.cmx wilson.cmx plot.cmx markovroute.cmx
 libs-rhp = markovpath.cmx gamegraphics.cmx game.cmx
+libs-stats = prioqueue.cmx print.cmx graph.cmx tree.cmx prim.cmx aldousbroder.cmx
+
 
 .PHONY: all clean
 CC = ocamlfind opt
@@ -10,10 +12,12 @@ pkg = -linkpkg -package graphics -package unix
 rhp : $(libs-rhp) rhp.ml
 	$(CC) $(pkg) -o $@ $^
 
+stats : $(libs-stats) stats.ml
+	$(CC) -o $@ $^
 
 all : test acm acu stats rct rhp
 
-test acm acu stats rct : % : $(libs) %.ml
+test acm acu rct : % : $(libs) %.ml
 	$(CC) -o $@ $^
 
 
