@@ -34,9 +34,7 @@ let write_tree parent file =
   p out "}\n" ;
   close_out_noerr out
 
-let draw_graph g filename =
-  Sys.chdir "graphviz" ;
-  write_graph g (filename ^ ".dot") ;
+let convert filename =
   Printf.printf "Wrote graphviz/%s.dot\n" filename ; flush stdout ;
   let comd =
     Printf.sprintf "sfdp -Tpng %s.dot -o %s.png" filename filename
@@ -44,12 +42,15 @@ let draw_graph g filename =
   ignore (Sys.command comd) ;
   Printf.printf "Wrote graphviz/%s.png\n\n" filename
 
+let draw_graph g filename =
+  Sys.chdir "graphviz" ;
+  write_graph g (filename ^ ".dot") ;
+  convert filename ;
+  Sys.chdir ".."
+
 let draw_tree g filename =
   Sys.chdir "graphviz" ;
   write_tree g (filename ^ ".dot") ;
-  Printf.printf "Wrote graphviz/%s.dot\n" filename ; flush stdout ;
-  let comd =
-    Printf.sprintf "sfdp -Tpng %s.dot -o %s.png" filename filename
-  in
-  ignore (Sys.command comd) ;
-  Printf.printf "Wrote graphviz/%s.png\n\n" filename
+  convert filename ;
+  Sys.chdir ".."
+

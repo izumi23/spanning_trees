@@ -5,6 +5,7 @@ let show_graph = ref false
 let torus = ref false
 let new_seed = ref false
 let sim = ref false
+let grid = ref false
 let n = ref 4
 let output_file = ref ""
 
@@ -18,6 +19,7 @@ let speclist =
    ("-seed", Arg.Set new_seed, "Use a new random seed");
    ("-sim", Arg.Set sim, "Simulate a complete graph");
    ("-simul", Arg.Set sim, "Simulate a complete graph");
+   ("-grid", Arg.Set grid, "Plot the tree on a grid");
    ("-o", Arg.Set_string output_file, "Set output file name")
   ]
 
@@ -62,5 +64,5 @@ let () =
   ) ;
 
   if !output_file != "" then
-    if !torus then Plot.plot_tree p !output_file
+    if !grid then Plot.plot_tree p !output_file
     else Draw.draw_tree p !output_file

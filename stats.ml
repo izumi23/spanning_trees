@@ -1,4 +1,4 @@
-let usage_msg = "stats [options] <nb_iterations> <values>"
+let usage_msg = "stats [options] <values>"
 
 let show_graph = ref false
 let torus = ref false
@@ -62,10 +62,12 @@ let () =
   if !output_file != "" then (
     let p = Printf.fprintf in
     Sys.chdir "statresults" ;
-    let out = open_out !output_file in
+    let filename = !output_file ^ ".dat" in
+    let out = open_out filename in
     for k = 0 to nb_values - 1 do
-      p out "%d %f %f\n" x_axis.(k) w_axis_mean.(k) h_axis_mean.(k)
+      if !uniform then p out "%d %f\n" x_axis.(k) h_axis_mean.(k)
+      else p out "%d %f %f\n" x_axis.(k) w_axis_mean.(k) h_axis_mean.(k)
     done ;
     close_out_noerr out ;
-    Printf.printf "Wrote statresults/%s\n" !output_file
+    Printf.printf "Wrote statresults/%s\n" filename
   )
