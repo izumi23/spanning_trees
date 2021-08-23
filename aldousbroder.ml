@@ -40,26 +40,3 @@ let aldous_broder_complete n =
   in
   aux 0 [] 0
 
-
-let aldous_broder_weighted g =
-
-  let n = Array.length g in
-  let visite = Array.make n false in
-  let w_parent = Array.make n (-1, 0.) in
-  visite.(0) <- true ;
-  
-  let rec aux m l x =
-    if m = n-1 then List.rev l, w_parent
-    else
-      let d = List.length g.(x) in
-      let r = Random.int d in
-      let (y, c) = List.nth g.(x) r in
-      if visite.(y) then aux m l y
-      else (
-        visite.(y) <- true ; w_parent.(y) <- (x, c) ;
-        aux (m+1) ((x, y) :: l) y
-      )
-    
-  in
-  aux 0 [] 0
-  

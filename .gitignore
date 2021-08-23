@@ -13,6 +13,8 @@ graphviz/t20*
 plots/t4*
 plots/t5*
 plots/test*
+plots/*cut*
 statresults/stats1.txt
 statresults/others
 statresults/.~*
+statresults/torus-unif-reg.csv

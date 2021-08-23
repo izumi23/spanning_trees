@@ -45,7 +45,7 @@ let () =
 
   let t = Tree.construct_tree parent in
 
-  Printf.printf "(0)   %f\n" (Tree.routing_cost g t) ; f () ;
+  Printf.printf "(0)   %.0f\n" (Tree.routing_cost g t) ; f () ;
 
   let step = !iterations / 100 in
   let weight = ref max_float in
@@ -57,13 +57,13 @@ let () =
     if i >= !iterations / 2 then sum := !sum +. !weight ;
     mini := min !mini !weight ;
     if i mod step = step - 1 then (
-      Printf.printf "(%d)   %f      min = %f\n" (i+1) !weight !mini ; f ()
+      Printf.printf "(%d)   %.0f      min = %.0f\n" (i+1) !weight !mini ; f ()
     )
   done ;
   print_newline () ;
 
   let avg = !sum /. float_of_int (!iterations / 2) in
-  Printf.printf "Second half average: %f\nMinimum: %f\n\n" avg !mini ;
+  Printf.printf "Second half average: %.0f\nMinimum: %.0f\n\n" avg !mini ;
 
   if !output_file != "" then
     if !torus then Plot.plot_tree parent !output_file
